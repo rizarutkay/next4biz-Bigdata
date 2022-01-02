@@ -23,12 +23,9 @@ class EmailController extends AbstractController
      */
     public function getEmailReport(Request $request, EmailRequestValidator $emailRequestValidator, EmailService $emailService): JsonResponse
     {        
-        $data = (array) json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
 
-        $startDate = $data['date_range']['start'];
-        $endDate = $data['date_range']['end'];
-
-        $errors = $emailRequestValidator->validator->validate($data, $emailRequestValidator->rules($startDate));
+        $errors = $emailRequestValidator->validator->validate($data, $emailRequestValidator->rules());
 
         if(count($errors)>0) {
             foreach ($errors as $violation) {
@@ -39,6 +36,9 @@ class EmailController extends AbstractController
             'message'=>$messages
         ]);
         }
+
+        $startDate = $data['date_range']['start'];
+        $endDate = $data['date_range']['end'];
 
         $emailReport = match($data['period']) {
             'daily' => $emailService->getDailyEmailReport($startDate, $endDate),

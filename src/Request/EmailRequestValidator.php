@@ -4,6 +4,7 @@ namespace App\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EmailRequestValidator
@@ -21,9 +22,9 @@ class EmailRequestValidator
      * 
      * @return Collection
      */
-    public function rules(string $startDate): Collection
+    public function rules(): Collection
     {
-        return new Assert\Collection([
+        return new Assert\Collection([ 
             'period' => [
                 new Assert\NotBlank(),
                 new Assert\Length(['max' => 10, 'min' => 5]),
@@ -45,12 +46,12 @@ class EmailRequestValidator
                         new Assert\DateTime([
                             'format' => 'Y-m-d H:i:s',
                         ]),
-                        new Assert\GreaterThan(
-                            $startDate,
-                        )
-                    ]
+                        new GreaterThan([
+                            'value' => 'start',
+                        ]),
+                    ],
                 ]),
-            ]
+            ],
         ]);
     }
 }
